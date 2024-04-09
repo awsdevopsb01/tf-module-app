@@ -8,7 +8,7 @@ resource "aws_security_group" "sg" {
     from_port        = 8080
     to_port          = 8080
     protocol         = "tcp"
-    cidr_blocks      = var.app_cidr_block
+    cidr_blocks      = var.allow_app_cidr
   }
 
   ingress {
@@ -37,7 +37,8 @@ resource "aws_launch_template" "template" {
   name_prefix   = "${var.name}-${var.env}-lt"
   image_id      = data.aws_ami.ami.id
   instance_type = var.instance_type
-  vpc_zone_identifier = var.subnet_ids
+  vpc_security_group_ids = [aws_security_group.sg.id]
+
 }
 
 resource "aws_autoscaling_group" "asg" {
@@ -45,6 +46,7 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity   = var.desired_capacity
   max_size           = var.max_size
   min_size           = var.min_size
+  vpc_zone_identifier = var.subnet_ids
 
   launch_template {
     id      = aws_launch_template.template.id
