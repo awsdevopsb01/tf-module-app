@@ -27,9 +27,7 @@ resource "aws_security_group" "sg" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  tags = {
-    Name = "${var.name}-${var.env}-sg"
-  }
+  tags = merge(var.tags, {Name="${var.env}-${var.name}-app-sg" })
 }
 
 
@@ -52,4 +50,13 @@ resource "aws_autoscaling_group" "asg" {
     id      = aws_launch_template.template.id
     version = "$Latest"
   }
+}
+
+resource "aws_lb_target_group" "main" {
+  name        = "${var.name}-${var.env}-tg"
+  target_type = "alb"
+  port        = var.app_port
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  tags = merge(var.tags, {Name="${var.env}-${var.name}-alb-tg" })
 }
