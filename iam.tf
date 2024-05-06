@@ -39,12 +39,6 @@ resource "aws_iam_role_policy" "iam_ssm_role_policy" {
           var.kms_arn,
           "arn:aws:ssm:us-east-1:${data.aws_caller_identity.identity.account_id}:parameter/${var.env}.${var.name}.*"
         ]
-      },
-      {
-        "Sid": "VisualEditor1",
-        "Effect": "Allow",
-        "Action": "ssm:DescribeParameters",
-        "Resource": "*"
       }
     ]
   })

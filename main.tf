@@ -23,7 +23,7 @@ resource "aws_security_group" "sg" {
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
-    #  cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -58,6 +58,15 @@ resource "aws_autoscaling_group" "asg" {
     id      = aws_launch_template.template.id
     version = "$Latest"
   }
+  dynamic "tag" {
+    for_each = local.asg_tags
+    content {
+      key                 = tag.key
+      propagate_at_launch = true
+      value               = tag.value
+    }
+  }
+
 }
 
 resource "aws_lb_target_group" "main" {
