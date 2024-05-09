@@ -4,6 +4,6 @@ locals {
 
   dns_name = "${var.dns_name}.${var.domain_name}"
 
-  parameters=concat([var.parameter, var.name])
-  resources= [for parm in local.parameters : "arn:aws:ssm:us-east-1:${data.aws_caller_identity.identity.account_id}:parameter/${var.env}.${parm}.*"]
+  parameters = concat(var.parameter, [var.name])
+  resources = [for parm in local.parameters : "arn:aws:ssm:us-east-1:${data.aws_caller_identity.identity.account_id}:parameter/${var.env}.${parm}.*"]
 }
